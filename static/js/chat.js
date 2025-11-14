@@ -1,6 +1,7 @@
 // NOVO BLOCO - Roda quando a página carrega
 // Corrige o fuso horário das mensagens já carregadas pelo HTML
 document.addEventListener('DOMContentLoaded', function() {
+    
     // Procura todos os elementos de tempo das mensagens já carregadas
     document.querySelectorAll('.message-time[data-timestamp]').forEach(function(timeElement) {
         const isoTimestamp = timeElement.dataset.timestamp;
@@ -14,133 +15,149 @@ document.addEventListener('DOMContentLoaded', function() {
             timeElement.textContent = localTime;
         }
     });
-});
-// --- FIM DO NOVO BLOCO ---
+    // --- FIM DO BLOCO DE FUSO HORÁRIO ---
 
 
-// Configuração inicial (código original)
-const messagesArea = document.getElementById('messagesArea');
-const messageForm = document.getElementById('messageForm');
-const messageInput = document.getElementById('messageInput');
-const matchId = document.getElementById('matchId').value;
-const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    // --- TODO O CÓDIGO DO CHAT FOI MOVIDO PARA DENTRO DO DOMCONTENTLOADED ---
 
-// ID da última mensagem carregada (para polling)
-let lastMessageId = parseInt(messagesArea.dataset.lastMessageId) || 0;
+    // Configuração inicial (código original)
+    const messagesArea = document.getElementById('messagesArea');
+    const messageForm = document.getElementById('messageForm');
 
-// Função para rolar para o final do chat
-function scrollToBottom() {
-    messagesArea.scrollTop = messagesArea.scrollHeight;
-}
-
-// Rola para o final ao carregar a página
-scrollToBottom();
-
-// Função para adicionar uma mensagem na tela
-function addMessageToScreen(messageData) {
-    
-    // <-- MUDANÇA 1: REMOVER MENSAGEM DE "VAZIO" ---
-    // Procura pela mensagem "Nenhuma mensagem"
-    const emptyMessage = document.getElementById('emptyChatMessage');
-    // Se ela existir, remove
-    if (emptyMessage) {
-        emptyMessage.remove();
+    // Se não houver 'messageForm' nesta página, pare de executar o resto do script.
+    if (!messageForm) {
+        return; 
     }
-    // --- FIM DA MUDANÇA 1 ---
+    
+    const messageInput = document.getElementById('messageInput');
+    const matchId = document.getElementById('matchId').value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // <-- CORREÇÃO 1: Lendo as URLs DEPOIS que a página carregou -->
+    const sendMessageUrl = document.getElementById('sendMessageUrl').value;
+    const getMessagesUrl = document.getElementById('getMessagesUrl').value;
 
 
-    // <-- MUDANÇA 2: CORREÇÃO DO FUSO HORÁRIO ---
-    // Converte o timestamp ISO (que vem do backend) para um objeto Data do JS
-    const messageDate = new Date(messageData.timestamp);
-    
-    // Formata para o horário local do navegador (ex: "13:00")
-    const localTime = messageDate.toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-    // --- FIM DA MUDANÇA 2 ---
+    // ID da última mensagem carregada (para polling)
+    let lastMessageId = parseInt(messagesArea.dataset.lastMessageId) || 0;
 
-    
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${messageData.is_mine ? 'mine' : 'theirs'}`;
-    messageDiv.setAttribute('data-message-id', messageData.id);
-    
-    messageDiv.innerHTML = `
-        <div class="message-bubble">
-            ${messageData.content}
-        </div>
-        <div class="message-time">
-            ${localTime} </div>
-    `;
-    
-    messagesArea.appendChild(messageDiv);
+    // Função para rolar para o final do chat
+    function scrollToBottom() {
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    // Rola para o final ao carregar a página
     scrollToBottom();
-    
-    // Atualiza o ID da última mensagem
-    lastMessageId = messageData.id;
-}
 
-// Função para enviar mensagem (AJAX)
-messageForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const content = messageInput.value.trim();
-    if (!content) return;
-    
-    // Desabilita input durante o envio
-    messageInput.disabled = true;
-    
-    // Envia mensagem para o backend
-    fetch('/api/send-message/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify({
-            match_id: matchId,
-            content: content
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            // Adiciona mensagem na tela
-            addMessageToScreen(data.message);
-            
-            // Limpa o campo de input
-            messageInput.value = '';
-        } else {
-            alert('Erro ao enviar mensagem: ' + data.message);
+    // Função para adicionar uma mensagem na tela
+    function addMessageToScreen(messageData) {
+        
+        // <-- MUDANÇA 1: REMOVER MENSAGEM DE "VAZIO" ---
+        // Procura pela mensagem "Nenhuma mensagem"
+        const emptyMessage = document.getElementById('emptyChatMessage');
+        // Se ela existir, remove
+        if (emptyMessage) {
+            emptyMessage.remove();
         }
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-        alert('Erro ao enviar mensagem');
-    })
-    .finally(() => {
-        // Reabilita input
-        messageInput.disabled = false;
-        messageInput.focus();
-    });
-});
+        // --- FIM DA MUDANÇA 1 ---
 
-// Função para buscar novas mensagens (Polling)
-function fetchNewMessages() {
-    fetch(`/api/get-messages/?match_id=${matchId}&last_message_id=${lastMessageId}`)
+
+        // <-- MUDANÇA 2: CORREÇÃO DO FUSO HORÁRIO ---
+        // Converte o timestamp ISO (que vem do backend) para um objeto Data do JS
+        const messageDate = new Date(messageData.timestamp);
+        
+        // Formata para o horário local do navegador (ex: "13:00")
+        const localTime = messageDate.toLocaleTimeString([], { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        // --- FIM DA MUDANÇA 2 ---
+
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${messageData.is_mine ? 'mine' : 'theirs'}`;
+        messageDiv.setAttribute('data-message-id', messageData.id);
+        
+        messageDiv.innerHTML = `
+            <div class="message-bubble">
+                ${messageData.content}
+            </div>
+            <div class="message-time">
+                ${localTime} </div>
+        `;
+        
+        messagesArea.appendChild(messageDiv);
+        scrollToBottom();
+        
+        // Atualiza o ID da última mensagem
+        lastMessageId = messageData.id;
+    }
+
+    // Função para enviar mensagem (AJAX)
+    messageForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const content = messageInput.value.trim();
+        if (!content) return;
+        
+        // Desabilita input durante o envio
+        messageInput.disabled = true;
+        
+        // <-- CORREÇÃO 2: Usar a variável 'sendMessageUrl' em vez da URL antiga -->
+        fetch(sendMessageUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+                match_id: matchId,
+                content: content
+            })
+        })
         .then(response => response.json())
         .then(data => {
-            if (data.status === 'success' && data.messages.length > 0) {
-                // Adiciona cada mensagem nova na tela
-                data.messages.forEach(message => {
-                    addMessageToScreen(message);
-                });
+            if (data.status === 'success') {
+                // Adiciona mensagem na tela
+                addMessageToScreen(data.message);
+                
+                // Limpa o campo de input
+                messageInput.value = '';
+            } else {
+                alert('Erro ao enviar mensagem: ' + data.message);
             }
         })
         .catch(error => {
-            console.error('Erro ao buscar mensagens:', error);
+            console.error('Erro:', error);
+            alert('Erro ao enviar mensagem');
+        })
+        .finally(() => {
+            // Reabilita input
+            messageInput.disabled = false;
+            messageInput.focus();
         });
-}
+    });
 
-// Inicia o polling: busca novas mensagens a cada 5 segundos
-setInterval(fetchNewMessages, 5000);
+    // Função para buscar novas mensagens (Polling)
+    function fetchNewMessages() {
+        
+        // <-- CORREÇÃO 3: Usar a variável 'getMessagesUrl' em vez da URL antiga -->
+        fetch(`${getMessagesUrl}?match_id=${matchId}&last_message_id=${lastMessageId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && data.messages.length > 0) {
+                    // Adiciona cada mensagem nova na tela
+                    data.messages.forEach(message => {
+                        addMessageToScreen(message);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao buscar mensagens:', error);
+            });
+    }
+
+    // Inicia o polling: busca novas mensagens a cada 5 segundos
+    setInterval(fetchNewMessages, 5000);
+
+}); // <-- FIM DO BLOCO DOMCONTENTLOADED ÚNICO

@@ -1,14 +1,15 @@
+// static/js/swipe.js
+
 document.addEventListener('DOMContentLoaded', function () {
     const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
-    const processSwipeUrl = document.getElementById('processSwipeUrl').value; // <-- ADICIONE ESTA LINHA
-    const cardStack = document.getElementById('cardStack');
-    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+    const processSwipeUrl = document.getElementById('processSwipeUrl').value; 
     const cardStack = document.getElementById('cardStack');
     const endMessage = document.getElementById('endMessage');
     let cards = Array.from(document.querySelectorAll('.pet-card'));
     const swipeButtons = document.getElementById('swipeButtons');
-
     const swipeContainer = document.getElementById('swipeContainer');
+    
+    // ... resto do código ...
     
     // ----------------------------------------------------
     // FUNÇÕES DE AÇÃO
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Envia a ação de like/pass para o backend Django
     function sendSwipeAction(petId, liked) {
-        fetch('/api/swipe/', {
+        fetch(processSwipeUrl, {  // <-- ALTERE ESTA LINHA
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json', 
