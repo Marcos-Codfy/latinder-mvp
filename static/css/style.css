@@ -1,33 +1,43 @@
-/* static/css/style.css */
-
+/* Estilo base para o corpo da página */
 body {
+    background-color: #f8f9fa; /* Uma cor de fundo de fallback */
     min-height: 100vh;
     position: relative;
-    font-family: 'Nunito Sans', sans-serif; /* Fonte padrão */
 
-    /* ****** MUDANÇA AQUI ****** */
-    /* Usando a imagem de fundo que você pediu */
-    background-image: url('../images/images/image_edfd9.jpg');
-    background-size: cover; /* Faz a imagem cobrir a tela toda */
-    background-position: center center;
-    background-attachment: fixed; /* Deixa o fundo parado */
-    z-index: 0;
+    /* ****** MUDANÇA PARA A FONTE NUNITO SANS (2/2) ****** */
+    font-family: 'Nunito Sans', sans-serif;
 }
 
-/* Vamos desativar o padrão de logo para não poluir o fundo */
+/* Pseudo-elemento para o fundo com imagem */
 body::before {
     content: '';
-    /* display: none; */ /* Descomente se ainda estiver vendo o padrão */
+    position: fixed; /* Fixo para não rolar com a página */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Coloca atrás de todo o conteúdo */
+
+    /* Sua imagem de fundo */
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+    background-position: center;
+
+    /* O BLUR PADRÃO PARA TODAS AS PÁGINAS */
+    filter: blur(5px);
+    transform: scale(1.05); /* Pequeno zoom para esconder bordas borradas */
 }
 
-/* O resto do seu CSS (glass-card, navbar, botões, landing-card, etc.)
-   continua normal depois daqui... */
+/* Estilo especial para a PÁGINA DE LOGIN (remove o blur) */
+body.login-page::before {
+    filter: none; /* Sem blur */
+}
 
-/* A classe para o efeito de VIDRO FOSCO */
+/* A classe para o efeito de VIDRO FOSCO (Glassmorphism) */
 .glass-card {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.2); /* Fundo branco com alta transparência */
+    backdrop-filter: blur(10px); /* O filtro que borra o que está atrás */
+    -webkit-backdrop-filter: blur(10px); /* Suporte para Safari */
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 2rem;
@@ -36,43 +46,38 @@ body::before {
 
 /* Cor personalizada para a barra de navegação */
 .navbar-lilac {
-    background-color: lch(42.62% 65 318.25);
+    background-color: #8E44AD; /* Nosso tom de lilás/roxo */
 }
 
 /* Sobrescreve as cores dos botões primários (azuis) */
 .btn-primary {
-    background-color: #eac891;
-    border-color: #EAC891;
+    background-color: #8E44AD;
+    border-color: #8E44AD;
 }
 
 .btn-primary:hover {
-    background-color: #EAC891;
-    border-color: #EAC891;
+    background-color: #7B3A99; /* Um tom um pouco mais escuro para o efeito hover */
+    border-color: #7B3A99;
 }
 
 /* Sobrescreve as cores dos botões de sucesso (verdes) */
 .btn-success {
-    background-color: #eac;
-    border-color: #EAC891;
+    background-color: #8E44AD;
+    border-color: #8E44AD;
 }
 
 .btn-success:hover {
-    background-color: #EAC891;
-    border-color: #EAC891;
+    background-color: #7B3A99;
+    border-color: #7B3A99;
 }
+
 
 /* Garante que o container do Swiper tenha um tamanho mínimo */
 .swiper {
     width: 100%;
-    height: 500px;
+    height: 500px; /* Altura aproximada do card */
 }
 
-/* ANIMAÇÃO DO GRADIENTE */
-@keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
 
 /* ================================================= */
 /* === NOVO ESTILO PARA A LANDING PAGE (index.html) === */
@@ -173,28 +178,3 @@ body::before {
 .btn-landing-action .fa-arrow-right {
     margin-left: 10px;
 }
-
-/* Se você usar um segundo botão (ex: Cadastre-se) */
-/* .btn-landing-action-secondary {
-    background: none;
-    color: #f9a825;
-    border: 1px solid #f9a825;
-    font-weight: 600;
-    border-radius: 15px;
-    padding: 10px 25px;
-    width: 100%;
-    max-width: 250px;
-    margin: 10px auto 0;
-    display: block;
-    transition: all 0.3s ease;
-}
-.btn-landing-action-secondary:hover {
-    background-color: #f9a825;
-    color: #ffffff;
-} */
-
-/* Importar fontes do Google Fonts - adicione no cabeçalho do seu base.html ou aqui */
-/* Você pode adicionar isso no <head> do seu base.html para carregar as fontes globais */
-/*
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-*/

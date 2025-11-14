@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+    const processSwipeUrl = document.getElementById('processSwipeUrl').value; // <-- ADICIONE ESTA LINHA
+    const cardStack = document.getElementById('cardStack');
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
     const cardStack = document.getElementById('cardStack');
     const endMessage = document.getElementById('endMessage');
     let cards = Array.from(document.querySelectorAll('.pet-card'));

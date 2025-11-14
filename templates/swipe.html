@@ -10,7 +10,7 @@
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
         {% csrf_token %}
-        
+        <input type="hidden" id="processSwipeUrl" value="{% url 'process_swipe' %}">
         <div class="end-message glass-card" id="endMessage" style="display: none;">
             <h4>Fim da Fila!</h4>
             <p class="lead">Você já viu todos os pets disponíveis por enquanto. Volte mais tarde para ver novos perfis!</p>

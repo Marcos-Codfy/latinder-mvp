@@ -1,25 +1,36 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
-{% comment %}
-Este bloco adiciona a classe 'login-page' ao <body> desta página específica.
-No nosso CSS, a classe .login-page remove o blur do fundo.
-{% endcomment %}
-{% block body_class %}login-page{% endblock %}
-
 {% block content %}
-<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="col-md-6 col-lg-4">
-
-        <div class="glass-card">
-            <h2 class="text-center mb-4">Login</h2>
-            <form method="post">
+<div class="landing-page-container d-flex align-items-center justify-content-center">
+    
+    <div class="landing-card" style="max-width: 450px;">
+        
+        <div class="card-body-content">
+            
+            <h1 class="landing-title">Login</h1>
+            
+            <form class="login" method="POST" action="{% url 'login' %}">
                 {% csrf_token %}
+                
                 {{ form|crispy }}
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary mt-3">Entrar</button>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-landing-action btn-lg mt-3" type="submit">Entrar</button>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="landing-text" style="font-size: 0.9rem; margin-bottom: 5px;">
+                        <a href="{% url 'password_reset' %}">Esqueceu a sua senha?</a>
+                    </p>
+                    <p class="landing-text" style="font-size: 0.9rem;">
+                        Não tem uma conta? <a href="{% url 'signup' %}">Cadastre-se</a>
+                    </p>
                 </div>
             </form>
-        </div></div>
+
+        </div>
+    </div>
 </div>
 {% endblock %}

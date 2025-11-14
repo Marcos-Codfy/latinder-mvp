@@ -1,19 +1,36 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-
-        <div class="glass-card">
-            <h2 class="text-center mb-4">Crie sua Conta</h2>
-            <form method="post">
+<div class="landing-page-container d-flex align-items-center justify-content-center">
+    
+    <div class="landing-card" style="max-width: 450px;">
+        
+        <div class="card-body-content">
+            
+            <h1 class="landing-title">Cadastre-se</h1>
+            <p class="landing-text" style="margin-top: -10px; margin-bottom: 20px;">
+                É rápido e fácil.
+            </p>
+            
+            <form class="signup" id="signup_form" method="POST" action="{% url 'signup' %}">
                 {% csrf_token %}
+                
                 {{ form|crispy }}
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary mt-3">Cadastrar</button>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-landing-action btn-lg mt-3" type="submit">Criar Conta</button>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="landing-text" style="font-size: 0.9rem;">
+                        Já tem uma conta? <a href="{% url 'login' %}">Faça login</a>
+                    </p>
                 </div>
             </form>
-        </div></div>
+
+        </div>
+    </div>
 </div>
 {% endblock %}
